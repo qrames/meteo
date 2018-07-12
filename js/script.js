@@ -6,18 +6,33 @@ $(document).ready(function() {
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         maxZoom: 18,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-        '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-        'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         id: 'mapbox.streets'
     }).addTo(mymap);
     $.get({
-        url : 'https://public.opendatasoft.com/api/records/1.0/search/?dataset=contours-simplifies-des-departements-francais-2015&rows=150&facet=code_dept',
-        dataType : 'json',
-        success: function(data){
-            for (var commune of data['records']){
+        url: 'https://public.opendatasoft.com/api/records/1.0/search/?dataset=contours-simplifies-des-departements-francais-2015&rows=150&facet=code_dept',
+        dataType: 'json',
+        success: function(data) {
+            for (var commune of data['records']) {
+
                 //console.log(commune['fields']['geo_shape']);
-                L.geoJSON(commune['fields']['geo_shape']).addTo(mymap);
+
+                var polygon = L.geoJSON(commune['fields']['geo_shape']).addTo(mymap);
+                polygon.bindPopup(commune['fields']['nom_dept']);
+
             }
+        }
+
+    });
+
+    $.get({
+        url: 'http://api.openweathermap.org/data/2.5/weather?q=Mende,fr&APPID=fb9e60e86f1a9afc0eea0ede160442c7',
+
+        dataType: 'json',
+
+        success: function(data) {
+            console.log(data);
         }
 
     })
