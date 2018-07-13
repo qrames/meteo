@@ -20,16 +20,25 @@ $(document).ready(function() {
                 // console.log(commune);
                 var polygon = L.geoJSON(commune['fields']['geo_shape']).addTo(mymap);
                 $.get({
-                    url: 'http://api.openweathermap.org/data/2.5/weather?q='+commune['fields']['nom_chf'] + ',fr&APPID=fb9e60e86f1a9afc0eea0ede160442c7',
+                    url: 'http://api.openweathermap.org/data/2.5/weather?q=' + commune['fields']['nom_chf'] + ',fr&APPID=fb9e60e86f1a9afc0eea0ede160442c7',
 
                     dataType: 'json',
 
                     success: function(meteo) {
                         // var marker = L.marker([ commune['fields']['geo_point_2d']['0'], commune['fields']['geo_point_2d']['1'] ]).addTo(mymap).bindPopup(commune['fields']['nom_dept'] + '<br />' + commune['fields']['nom_chf']  + '<br />' + meteo).openPopup();
-                        var Tc =  meteo['main']['temp'] - 273.15;
+                        var Tc = meteo['main']['temp'] - 273.15;
                         var htmlPopup = meteo['name'] + '<br /><img alt="' + meteo['weather']['0']['description'] + '" src="http://openweathermap.org/img/w/' + meteo['weather']['0']['icon'] + '.png">' + Tc;
 
-                        var marker = L.marker([ meteo['coord']['lat'],  meteo['coord']['lon'] ]).addTo(mymap).bindPopup(htmlPopup).openPopup();
+                        var iconM =  L.icon({
+                            iconUrl: 'http://openweathermap.org/img/w/' + meteo['weather']['0']['icon'] + '.png',
+                            iconSize: [80, 80],
+
+                            iconAnchor: [40, 40],
+
+                            popupAnchor: [0, 0]
+                        })
+
+                        var marker = L.marker([ meteo['coord']['lat'],  meteo['coord']['lon'] ],{icon:iconM}).addTo(mymap).bindPopup(htmlPopup).openPopup();
                     }
 
                 })
